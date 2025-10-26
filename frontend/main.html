@@ -1,0 +1,1334 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haunted AI Story Maker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #000000, #1a0000, #0d001a, #000000);
+            background-attachment: fixed;
+            color: #ff0000;
+            font-family: 'Creepster', cursive;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            text-align: center;
+            overflow-x: hidden;
+            position: relative;
+            animation: heartbeat 2s infinite;
+            filter: sepia(0.1) contrast(1.2) brightness(0.8);
+            transition: background 1s ease, filter 1s ease;
+        }
+        
+        body.dark-mode {
+            background: linear-gradient(135deg, #000000, #000033, #000000, #000000);
+            filter: sepia(0.2) contrast(1.5) brightness(0.5) hue-rotate(180deg);
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(255, 0, 0, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(128, 0, 128, 0.1) 0%, transparent 50%), radial-gradient(circle at 40% 80%, rgba(0, 0, 0, 0.8) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+            animation: shadow-shift 10s infinite linear;
+        }
+        
+        h1 {
+            font-size: 3em;
+            text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000;
+            animation: flicker 2s infinite alternate, blood-drip 4s infinite;
+            margin-top: 50px;
+        }
+        
+        .description {
+            font-size: 1.5em;
+            color: #ffffff;
+            text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000;
+            animation: glow-text 3s infinite alternate;
+            margin-bottom: 50px;
+        }
+        
+        .background-image {
+            background-image: url('https://source.unsplash.com/random/1920x1080/?dark,horror');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            opacity: 0.1;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        #storyForm {
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #ff0000;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 30px auto;
+            max-width: 500px;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5), inset 0 0 10px rgba(139, 0, 0, 0.3);
+            animation: pulse 3s infinite;
+        }
+        
+        input,
+        select {
+            width: 80%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #ff0000;
+            border-radius: 5px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #ffffff;
+            font-family: 'Creepster', cursive;
+            font-size: 1.2em;
+            text-align: center;
+        }
+        
+        input:focus,
+        select:focus {
+            outline: none;
+            box-shadow: 0 0 10px #ff0000;
+        }
+        
+        button {
+            background: #8b0000;
+            color: #ff0000;
+            border: 2px solid #ff0000;
+            padding: 12px 20px;
+            margin: 10px 5px;
+            cursor: pointer;
+            font-family: 'Creepster', cursive;
+            font-size: 1.2em;
+            border-radius: 5px;
+            transition: all 0.3s;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+            animation: glow 2s infinite alternate;
+        }
+        
+        button:hover {
+            background: #ff0000;
+            color: #000000;
+            box-shadow: 0 0 20px #ff0000, inset 0 0 10px rgba(139, 0, 0, 0.5);
+            transform: scale(1.1);
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        #story {
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #ff0000;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 30px auto;
+            max-width: 800px;
+            max-height: 400px;
+            overflow-y: auto;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5), inset 0 0 10px rgba(139, 0, 0, 0.3);
+            animation: pulse 3s infinite;
+            color: #ffffff;
+            text-shadow: 0 0 5px #ff0000;
+        }
+        
+        #story h2 {
+            color: #ff0000;
+            text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000;
+            animation: flicker 2s infinite alternate;
+        }
+        
+        #story p {
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+        
+        .ghost {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .ghost:nth-child(1) {
+            top: 10%;
+            left: 10%;
+        }
+        
+        .ghost:nth-child(2) {
+            top: 20%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+        
+        .ghost:nth-child(3) {
+            bottom: 20%;
+            left: 15%;
+            animation-delay: 4s;
+        }
+        
+        .ghost:nth-child(4) {
+            top: 30%;
+            right: 20%;
+            animation-delay: 1s;
+        }
+        
+        .ghost:nth-child(5) {
+            bottom: 30%;
+            right: 15%;
+            animation-delay: 3s;
+        }
+        
+        .fog {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 40%, rgba(255, 255, 255, 0.05) 0%, transparent 50%), radial-gradient(circle at 70% 60%, rgba(255, 255, 255, 0.03) 0%, transparent 50%);
+            animation: fog-move 20s infinite linear;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.05;
+            transition: opacity 1s ease;
+        }
+        
+        body.dark-mode .fog {
+            opacity: 0.3;
+        }
+        
+        @keyframes fog-move {
+            0% {
+                transform: translateX(-100%) translateY(-50%);
+            }
+            100% {
+                transform: translateX(100%) translateY(50%);
+            }
+        }
+        
+        .spider-web {
+            position: absolute;
+            top: 20%;
+            right: 10%;
+            width: 100px;
+            height: 100px;
+            background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0ic3BpZGVyIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCI+PGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjEpIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjc3BpZGVyKSIvPjwvc3ZnPg==') no-repeat center;
+            animation: web-sway 5s infinite ease-in-out;
+            opacity: 0.3;
+        }
+        
+        .bat {
+            position: absolute;
+            top: 15%;
+            left: 20%;
+            width: 40px;
+            height: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            clip-path: polygon(50% 0%, 0% 100%, 15% 80%, 35% 100%, 50% 80%, 65% 100%, 85% 80%, 100% 100%);
+            animation: bat-fly 8s infinite linear;
+        }
+        
+        @keyframes bat-fly {
+            0% {
+                transform: translateX(-100px) translateY(0px);
+            }
+            25% {
+                transform: translateX(200px) translateY(-20px);
+            }
+            50% {
+                transform: translateX(400px) translateY(10px);
+            }
+            75% {
+                transform: translateX(600px) translateY(-10px);
+            }
+            100% {
+                transform: translateX(800px) translateY(0px);
+            }
+        }
+        
+        .candle {
+            position: absolute;
+            bottom: 10%;
+            width: 20px;
+            height: 60px;
+            background: linear-gradient(to top, #8b4513 80%, #ffff99 20%);
+            border-radius: 2px;
+            animation: candle-flicker 2s infinite alternate;
+        }
+        
+        .candle:nth-child(6) {
+            left: 5%;
+        }
+        
+        .candle:nth-child(7) {
+            right: 5%;
+        }
+        
+        .candle:nth-child(8) {
+            left: 15%;
+            bottom: 15%;
+        }
+        
+        .candle:nth-child(9) {
+            right: 15%;
+            bottom: 15%;
+        }
+        
+        @keyframes candle-flicker {
+            0%,
+            100% {
+                opacity: 0.8;
+                transform: scaleY(1);
+            }
+            50% {
+                opacity: 1;
+                transform: scaleY(1.05);
+            }
+        }
+        
+        .blood-drip {
+            position: absolute;
+            top: 0;
+            width: 2px;
+            height: 100px;
+            background: linear-gradient(to bottom, #ff0000 0%, rgba(255, 0, 0, 0) 100%);
+            animation: drip 3s infinite linear;
+            opacity: 0.6;
+        }
+        
+        .blood-drip:nth-child(10) {
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .blood-drip:nth-child(11) {
+            right: 10%;
+            animation-delay: 1s;
+        }
+        
+        .blood-drip:nth-child(12) {
+            left: 25%;
+            animation-delay: 2s;
+        }
+        
+        @keyframes drip {
+            0% {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
+        
+        .skull {
+            position: absolute;
+            top: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50% 50% 40% 40%;
+            animation: skull-float 7s infinite ease-in-out;
+            opacity: 0.3;
+        }
+        
+        .skull::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 15px;
+            width: 50px;
+            height: 30px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 50%;
+            clip-path: polygon(0% 0%, 100% 0%, 85% 100%, 15% 100%);
+        }
+        
+        @keyframes skull-float {
+            0%,
+            100% {
+                transform: translateX(-50%) translateY(0px) rotate(0deg);
+            }
+            25% {
+                transform: translateX(-50%) translateY(-10px) rotate(2deg);
+            }
+            50% {
+                transform: translateX(-50%) translateY(0px) rotate(0deg);
+            }
+            75% {
+                transform: translateX(-50%) translateY(10px) rotate(-2deg);
+            }
+        }
+        
+        .chain {
+            position: absolute;
+            top: 0;
+            left: 30%;
+            width: 2px;
+            height: 100%;
+            background: repeating-linear-gradient(to bottom, #666 0px, #666 10px, transparent 10px, transparent 20px);
+            animation: chain-sway 4s infinite ease-in-out;
+            opacity: 0.4;
+        }
+        
+        @keyframes chain-sway {
+            0%,
+            100% {
+                transform: rotate(0deg);
+            }
+            50% {
+                transform: rotate(5deg);
+            }
+        }
+        
+        .raven {
+            position: absolute;
+            top: 25%;
+            right: 5%;
+            width: 50px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.6);
+            clip-path: polygon(50% 0%, 0% 40%, 10% 60%, 20% 80%, 30% 60%, 40% 80%, 50% 60%, 60% 80%, 70% 60%, 80% 80%, 90% 60%, 100% 40%);
+            animation: raven-fly 10s infinite linear;
+        }
+        
+        @keyframes raven-fly {
+            0% {
+                transform: translateX(100px) translateY(0px);
+            }
+            25% {
+                transform: translateX(-50px) translateY(-15px);
+            }
+            50% {
+                transform: translateX(-200px) translateY(5px);
+            }
+            75% {
+                transform: translateX(-350px) translateY(-10px);
+            }
+            100% {
+                transform: translateX(-500px) translateY(0px);
+            }
+        }
+        
+        .eye {
+            position: absolute;
+            top: 40%;
+            left: 5%;
+            width: 30px;
+            height: 30px;
+            background: radial-gradient(circle at 50% 50%, #ffffff 0%, #ff0000 50%, #000000 100%);
+            border-radius: 50%;
+            animation: eye-blink 4s infinite;
+            opacity: 0.7;
+        }
+        
+        .eye:nth-child(13) {
+            top: 60%;
+            left: 85%;
+            animation-delay: 2s;
+        }
+        
+        @keyframes eye-blink {
+            0%,
+            90%,
+            100% {
+                transform: scaleY(1);
+            }
+            95% {
+                transform: scaleY(0.1);
+            }
+        }
+        
+        .lightning {
+            position: absolute;
+            top: 10%;
+            right: 20%;
+            width: 4px;
+            height: 80px;
+            background: linear-gradient(to bottom, #ffffff 0%, #ffff00 50%, #ffffff 100%);
+            clip-path: polygon(50% 0%, 30% 25%, 60% 50%, 20% 75%, 80% 100%, 40% 80%, 70% 60%, 10% 40%, 90% 20%);
+            animation: lightning-flash 6s infinite;
+            opacity: 0;
+        }
+        
+        @keyframes lightning-flash {
+            0%,
+            95%,
+            100% {
+                opacity: 0;
+            }
+            97.5% {
+                opacity: 1;
+            }
+        }
+        
+        .tombstone {
+            position: absolute;
+            bottom: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 60px;
+            background: linear-gradient(to bottom, #666 0%, #333 100%);
+            border-radius: 5px 5px 20px 20px;
+            animation: tombstone-shake 8s infinite ease-in-out;
+            opacity: 0.5;
+        }
+        
+        .pumpkin {
+            position: absolute;
+            top: 10%;
+            right: 5%;
+            width: 50px;
+            height: 50px;
+            background: radial-gradient(circle at 30% 30%, #ff8c00 0%, #ff4500 50%, #8b4513 100%);
+            border-radius: 50%;
+            animation: pumpkin-glow 3s infinite alternate;
+            opacity: 0.8;
+        }
+        
+        .pumpkin::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 15px;
+            width: 20px;
+            height: 15px;
+            background: #000;
+            clip-path: polygon(0% 0%, 100% 0%, 85% 100%, 15% 100%);
+        }
+        
+        @keyframes pumpkin-glow {
+            0% {
+                box-shadow: 0 0 10px #ff4500;
+            }
+            100% {
+                box-shadow: 0 0 20px #ff8c00, 0 0 30px #ff4500;
+            }
+        }
+        
+        .witch-hat {
+            position: absolute;
+            top: 5%;
+            left: 5%;
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-bottom: 40px solid #000;
+            animation: hat-float 5s infinite ease-in-out;
+            opacity: 0.7;
+        }
+        
+        .witch-hat::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -25px;
+            width: 50px;
+            height: 10px;
+            background: #000;
+            border-radius: 50%;
+        }
+        
+        @keyframes hat-float {
+            0%,
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-10px) rotate(5deg);
+            }
+        }
+        
+        .spooky-tree {
+            position: absolute;
+            bottom: 10%;
+            right: 10%;
+            width: 30px;
+            height: 60px;
+            background: linear-gradient(to top, #8b4513 60%, #228b22 40%);
+            border-radius: 50% 50% 0 0;
+            animation: tree-sway 4s infinite ease-in-out;
+            opacity: 0.6;
+        }
+        
+        @keyframes tree-sway {
+            0%,
+            100% {
+                transform: rotate(0deg);
+            }
+            50% {
+                transform: rotate(2deg);
+            }
+        }
+        
+        .tombstone::before {
+            content: 'RIP';
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #ffffff;
+            font-size: 8px;
+            font-weight: bold;
+            text-shadow: 0 0 3px #000000;
+        }
+        
+        @keyframes tombstone-shake {
+            0%,
+            100% {
+                transform: translateX(-50%) rotate(0deg);
+            }
+            10% {
+                transform: translateX(-50%) rotate(1deg);
+            }
+            20% {
+                transform: translateX(-50%) rotate(-1deg);
+            }
+            30% {
+                transform: translateX(-50%) rotate(0.5deg);
+            }
+            40% {
+                transform: translateX(-50%) rotate(-0.5deg);
+            }
+            50% {
+                transform: translateX(-50%) rotate(0deg);
+            }
+        }
+        
+        @keyframes blood-drip {
+            0%,
+            100% {
+                text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000;
+            }
+            25% {
+                text-shadow: 2px 2px 5px #8b0000, 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000;
+            }
+            50% {
+                text-shadow: -2px 2px 5px #8b0000, 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000;
+            }
+            75% {
+                text-shadow: 0 -2px 5px #8b0000, 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000;
+            }
+        }
+        
+        @keyframes glow {
+            0%,
+            100% {
+                box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
+            }
+        }
+        
+        @keyframes glow-text {
+            0%,
+            100% {
+                text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000;
+            }
+            50% {
+                text-shadow: 0 0 15px #ff4500, 0 0 25px #ff4500, 0 0 35px #ff4500;
+            }
+        }
+        
+        footer {
+            margin-top: 20px;
+            color: #ffffff;
+            font-size: 1.2em;
+            text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000;
+            font-weight: bold;
+            animation: footer-glow 4s infinite alternate;
+            text-align: center;
+        }
+        
+        @keyframes footer-glow {
+            0%,
+            100% {
+                text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000;
+            }
+            50% {
+                text-shadow: 0 0 15px #ff4500, 0 0 25px #ff4500, 0 0 45px #ff4500;
+            }
+        }
+        
+        .exit-btn {
+            background: #8b0000;
+            color: #ff0000;
+            border: 2px solid #ff0000;
+            padding: 10px 20px;
+            margin-top: 10px;
+            cursor: pointer;
+            font-family: 'Creepster', cursive;
+            font-size: 1em;
+            border-radius: 5px;
+            transition: all 0.3s;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+            animation: glow 2s infinite alternate;
+        }
+        
+        .exit-btn:hover {
+            background: #ff0000;
+            color: #000000;
+            box-shadow: 0 0 20px #ff0000, inset 0 0 10px rgba(139, 0, 0, 0.5);
+            transform: scale(1.1);
+        }
+        
+        @keyframes shadow-shift {
+            0% {
+                transform: translateX(0) translateY(0);
+            }
+            25% {
+                transform: translateX(10px) translateY(-5px);
+            }
+            50% {
+                transform: translateX(0) translateY(0);
+            }
+            75% {
+                transform: translateX(-10px) translateY(5px);
+            }
+            100% {
+                transform: translateX(0) translateY(0);
+            }
+        }
+        
+        @keyframes shake {
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+            10%,
+            30%,
+            50%,
+            70%,
+            90% {
+                transform: translateX(-5px);
+            }
+            20%,
+            40%,
+            60%,
+            80% {
+                transform: translateX(5px);
+            }
+        }
+        /* Glitch Effect Styles */
+        
+        .glitch-active {
+            animation: glitch 4s ease-in-out;
+            filter: blur(1px) contrast(1.5) hue-rotate(90deg) saturate(2);
+        }
+        
+        .glitch-active::before,
+        .glitch-active::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient( 90deg, rgba(255, 0, 0, 0.1) 0px, rgba(255, 0, 0, 0.1) 2px, transparent 2px, transparent 4px);
+            background-size: 4px 100%;
+            animation: static-noise 0.1s infinite linear;
+            pointer-events: none;
+            z-index: 9999;
+        }
+        
+        .glitch-active::after {
+            background: repeating-linear-gradient( 0deg, rgba(0, 255, 0, 0.1) 0px, rgba(0, 255, 0, 0.1) 2px, transparent 2px, transparent 4px);
+            animation: static-noise 0.15s infinite linear reverse;
+        }
+        
+        @keyframes glitch {
+            0%,
+            100% {
+                transform: translate(0);
+                filter: blur(0px) contrast(1) hue-rotate(0deg) saturate(1);
+            }
+            10% {
+                transform: translate(-2px, 2px);
+                filter: blur(0.5px) contrast(1.2) hue-rotate(45deg) saturate(1.5);
+            }
+            20% {
+                transform: translate(2px, -2px);
+                filter: blur(1px) contrast(1.5) hue-rotate(90deg) saturate(2);
+            }
+            30% {
+                transform: translate(-1px, -1px);
+                filter: blur(0.5px) contrast(1.3) hue-rotate(135deg) saturate(1.8);
+            }
+            40% {
+                transform: translate(1px, 1px);
+                filter: blur(0.8px) contrast(1.4) hue-rotate(180deg) saturate(2.2);
+            }
+            50% {
+                transform: translate(0, -3px);
+                filter: blur(1.2px) contrast(1.6) hue-rotate(225deg) saturate(2.5);
+            }
+            60% {
+                transform: translate(-3px, 0);
+                filter: blur(0.7px) contrast(1.2) hue-rotate(270deg) saturate(1.9);
+            }
+            70% {
+                transform: translate(2px, 2px);
+                filter: blur(1px) contrast(1.5) hue-rotate(315deg) saturate(2.3);
+            }
+            80% {
+                transform: translate(-1px, 1px);
+                filter: blur(0.6px) contrast(1.1) hue-rotate(0deg) saturate(1.7);
+            }
+            90% {
+                transform: translate(1px, -1px);
+                filter: blur(0.9px) contrast(1.4) hue-rotate(45deg) saturate(2.1);
+            }
+        }
+        
+        @keyframes static-noise {
+            0% {
+                opacity: 0.1;
+            }
+            50% {
+                opacity: 0.3;
+            }
+            100% {
+                opacity: 0.1;
+            }
+        }
+        
+        .glitch-text {
+            animation: text-flicker 0.1s infinite linear;
+        }
+        
+        @keyframes text-flicker {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+        
+        #flashOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 10000;
+            transition: opacity 0.2s ease;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="background-image"></div>
+    <h1>Haunted AI Story Maker</h1>
+    <p class="description">Enter your character's name and choose a theme to conjure a chilling tale from the depths of darkness. Dare you proceed?</p>
+    <form id="storyForm" class="pulsing-shadow">
+        <input id="name" type="text" placeholder="Enter your character's name" aria-label="Enter your character's name"><br>
+        <select id="theme" aria-label="Choose a story theme">
+            <option value="haunted_house">Haunted House</option>
+            <option value="forest">Cursed Forest</option>
+            <option value="ghost_bride">Ghost Bride</option>
+            <option value="cursed_doll">Cursed Doll</option>
+            <option value="vampire_castle">Vampire Castle</option>
+            <option value="haunted_mirror">Haunted Mirror</option>
+            <option value="default">Random Terror</option>
+        </select><br>
+        <select id="length" aria-label="Choose story length">
+            <option value="5" selected>Short (5 paragraphs)</option>
+            <option value="10">Medium (10 paragraphs)</option>
+            <option value="20">Long (20 paragraphs)</option>
+            <option value="55">Epic (50-60 paragraphs)</option>
+            <option value="150">Nightmare (100-200 paragraphs)</option>
+        </select><br>
+        <select id="horror_level" aria-label="Choose story mode">
+            <option value="normal horror" selected>Normal Horror</option>
+            <option value="middle horror">Middle Horror</option>
+            <option value="extremely horror">Extremely Horror</option>
+        </select><br>
+        <select id="country" aria-label="Choose country">
+            <option value="random" selected>Random Country</option>
+            <option value="Albania">Albania</option>
+            <option value="Algeria">Algeria</option>
+            <option value="Andorra">Andorra</option>
+            <option value="Angola">Angola</option>
+            <option value="Antigua and Barbuda">Antigua and Barbuda</option>
+            <option value="Argentina">Argentina</option>
+            <option value="Armenia">Armenia</option>
+            <option value="Australia">Australia</option>
+            <option value="Austria">Austria</option>
+            <option value="Azerbaijan">Azerbaijan</option>
+            <option value="Bahamas">Bahamas</option>
+            <option value="Bahrain">Bahrain</option>
+            <option value="Bangladesh">Bangladesh</option>
+            <option value="Barbados">Barbados</option>
+            <option value="Belarus">Belarus</option>
+            <option value="Belgium">Belgium</option>
+            <option value="Belize">Belize</option>
+            <option value="Benin">Benin</option>
+            <option value="Bhutan">Bhutan</option>
+            <option value="Bolivia">Bolivia</option>
+            <option value="Bosnia and Herzegovina">Bosnia and Herzegovina</option>
+            <option value="Botswana">Botswana</option>
+            <option value="Brazil">Brazil</option>
+            <option value="Brunei">Brunei</option>
+            <option value="Bulgaria">Bulgaria</option>
+            <option value="Burkina Faso">Burkina Faso</option>
+            <option value="Burundi">Burundi</option>
+            <option value="Cabo Verde">Cabo Verde</option>
+            <option value="Cambodia">Cambodia</option>
+            <option value="Cameroon">Cameroon</option>
+            <option value="Canada">Canada</option>
+            <option value="Central African Republic">Central African Republic</option>
+            <option value="Chad">Chad</option>
+            <option value="Chile">Chile</option>
+            <option value="China">China</option>
+            <option value="Colombia">Colombia</option>
+            <option value="Comoros">Comoros</option>
+            <option value="Congo">Congo</option>
+            <option value="Costa Rica">Costa Rica</option>
+            <option value="Croatia">Croatia</option>
+            <option value="Cuba">Cuba</option>
+            <option value="Cyprus">Cyprus</option>
+            <option value="Czech Republic">Czech Republic</option>
+            <option value="Denmark">Denmark</option>
+            <option value="Djibouti">Djibouti</option>
+            <option value="Dominica">Dominica</option>
+            <option value="Dominican Republic">Dominican Republic</option>
+            <option value="Ecuador">Ecuador</option>
+            <option value="Egypt">Egypt</option>
+            <option value="El Salvador">El Salvador</option>
+            <option value="Equatorial Guinea">Equatorial Guinea</option>
+            <option value="Eritrea">Eritrea</option>
+            <option value="Estonia">Estonia</option>
+            <option value="Eswatini">Eswatini</option>
+            <option value="Ethiopia">Ethiopia</option>
+            <option value="Fiji">Fiji</option>
+            <option value="Finland">Finland</option>
+            <option value="France">France</option>
+            <option value="Gabon">Gabon</option>
+            <option value="Gambia">Gambia</option>
+            <option value="Ghana">Ghana</option>
+            <option value="Greece">Greece</option>
+            <option value="Grenada">Grenada</option>
+            <option value="Guatemala">Guatemala</option>
+            <option value="Guinea">Guinea</option>
+            <option value="Guinea-Bissau">Guinea-Bissau</option>
+            <option value="Guyana">Guyana</option>
+            <option value="Haiti">Haiti</option>
+            <option value="Honduras">Honduras</option>
+            <option value="Hungary">Hungary</option>
+            <option value="Iceland">Iceland</option>
+            <option value="India">India</option>
+            <option value="Indonesia">Indonesia</option>
+            <option value="Iran">Iran</option>
+            <option value="Iraq">Iraq</option>
+            <option value="Ireland">Ireland</option>
+            <option value="Israel">Israel</option>
+            <option value="Italy">Italy</option>
+            <option value="Jamaica">Jamaica</option>
+            <option value="Japan">Japan</option>
+            <option value="Jordan">Jordan</option>
+            <option value="Kazakhstan">Kazakhstan</option>
+            <option value="Kenya">Kenya</option>
+            <option value="Kiribati">Kiribati</option>
+            <option value="Kuwait">Kuwait</option>
+            <option value="Kyrgyzstan">Kyrgyzstan</option>
+            <option value="Laos">Laos</option>
+            <option value="Latvia">Latvia</option>
+            <option value="Lebanon">Lebanon</option>
+            <option value="Lesotho">Lesotho</option>
+            <option value="Liberia">Liberia</option>
+            <option value="Libya">Libya</option>
+            <option value="Liechtenstein">Liechtenstein</option>
+            <option value="Lithuania">Lithuania</option>
+            <option value="Luxembourg">Luxembourg</option>
+            <option value="Madagascar">Madagascar</option>
+            <option value="Malawi">Malawi</option>
+            <option value="Malaysia">Malaysia</option>
+            <option value="Maldives">Maldives</option>
+            <option value="Mali">Mali</option>
+            <option value="Malta">Malta</option>
+            <option value="Marshall Islands">Marshall Islands</option>
+            <option value="Mauritania">Mauritania</option>
+            <option value="Mauritius">Mauritius</option>
+            <option value="Mexico">Mexico</option>
+            <option value="Micronesia">Micronesia</option>
+            <option value="Moldova">Moldova</option>
+            <option value="Monaco">Monaco</option>
+            <option value="Mongolia">Mongolia</option>
+            <option value="Montenegro">Montenegro</option>
+            <option value="Morocco">Morocco</option>
+            <option value="Mozambique">Mozambique</option>
+            <option value="Myanmar">Myanmar</option>
+            <option value="Namibia">Namibia</option>
+            <option value="Nauru">Nauru</option>
+            <option value="Nepal">Nepal</option>
+            <option value="Netherlands">Netherlands</option>
+            <option value="New Zealand">New Zealand</option>
+            <option value="Nicaragua">Nicaragua</option>
+            <option value="Niger">Niger</option>
+            <option value="Nigeria">Nigeria</option>
+            <option value="North Korea">North Korea</option>
+            <option value="North Macedonia">North Macedonia</option>
+            <option value="Norway">Norway</option>
+            <option value="Oman">Oman</option>
+            <option value="Pakistan">Pakistan</option>
+            <option value="Palau">Palau</option>
+            <option value="Panama">Panama</option>
+            <option value="Papua New Guinea">Papua New Guinea</option>
+            <option value="Paraguay">Paraguay</option>
+            <option value="Peru">Peru</option>
+            <option value="Philippines">Philippines</option>
+            <option value="Poland">Poland</option>
+            <option value="Portugal">Portugal</option>
+        </select><br>
+        <div style="display: flex; gap: 10px; margin-top: 10px;">
+            <button type="button" id="generateBtn">Generate Story</button>
+            <button type="button" id="speakBtn" style="display:none;">Speak Story</button>
+            <button type="button" id="saveBtn" style="display:none;">Save Story</button>
+        </div>
+        <div style="display: flex; gap: 10px; margin-top: 10px;">
+            <button type="button" id="generateImageBtn" style="display:none;">Generate Horror Image</button>
+            <button type="button" id="glitchBtn" style="display:none;">Screen Glitch Horror Mode</button>
+            <button type="button" id="darkModeBtn">Dark Mode ⚡</button>
+            <button type="button" id="jumpscareBtn" style="display:none;">AI-Driven Jumpscare Generator</button>
+        </div>
+    </form>
+    <div id="story"></div>
+    <div class="ghost"></div>
+    <div class="ghost"></div>
+    <div class="ghost"></div>
+    <div class="ghost"></div>
+    <div class="ghost"></div>
+    <div class="fog"></div>
+    <div id="flashOverlay"></div>
+    <div class="bat"></div>
+    <div class="candle"></div>
+    <div class="candle"></div>
+    <div class="candle"></div>
+    <div class="candle"></div>
+    <div class="blood-drip"></div>
+    <div class="blood-drip"></div>
+    <div class="blood-drip"></div>
+    <div class="skull"></div>
+    <div class="chain"></div>
+    <footer>
+        <p>Created with dark magic and AI whispers. Happy Halloween! 🎃</p>
+        <button class="exit-btn" onclick="exitHauntedRealm()">Exit the Realm</button>
+    </footer>
+    <script>
+        function triggerGlitch() {
+            document.body.classList.add('glitch-active');
+            document.querySelectorAll('h1, h2, p, .description').forEach(el => el.classList.add('glitch-text'));
+            setTimeout(() => {
+                document.body.classList.remove('glitch-active');
+                document.querySelectorAll('h1, h2, p, .description').forEach(el => el.classList.remove('glitch-text'));
+            }, 4000);
+        }
+
+        document.getElementById('generateBtn').addEventListener('click', async function() {
+            const name = document.getElementById('name').value;
+            const theme = document.getElementById('theme').value;
+            const length = document.getElementById('length').value;
+            const country = document.getElementById('country').value;
+            const horror_level = document.getElementById('horror_level').value;
+            const response = await fetch('/generate_story', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name,
+                    theme,
+                    length,
+                    country,
+                    horror_level
+                })
+            });
+            const data = await response.json();
+            if (data.ok) {
+                const paragraphs = data.story.split('\n\n').filter(p => p.trim());
+                let html = '<h2>' + paragraphs[0] + '</h2>';
+                for (let i = 1; i < paragraphs.length; i++) {
+                    html += '<p>' + paragraphs[i] + '</p>';
+                }
+                document.getElementById('story').innerHTML = html;
+                document.getElementById('speakBtn').style.display = 'block';
+                document.getElementById('saveBtn').style.display = 'block';
+                document.getElementById('generateImageBtn').style.display = 'block';
+                document.getElementById('glitchBtn').style.display = 'block';
+                document.getElementById('jumpscareBtn').style.display = 'block';
+                // Automatic glitch trigger for supernatural keywords
+                const storyText = data.story.toLowerCase();
+                const supernaturalKeywords = ['ghost', 'haunted', 'supernatural', 'spirit', 'phantom', 'apparition', 'poltergeist', 'wraith'];
+                if (supernaturalKeywords.some(keyword => storyText.includes(keyword))) {
+                    setTimeout(triggerGlitch, 1000); // Trigger after 1 second for effect
+                }
+                // Store story paragraphs and peaks for jumpscares
+                storyParagraphs = data.story.split('\n\n').filter(p => p.trim());
+                // Analyze and schedule jumpscares if enabled
+                if (jumpscareEnabled) {
+                    analyzeAndScheduleJumpscares(data.story);
+                }
+            } else {
+                document.getElementById('story').innerHTML = '<p>Error generating story.</p>';
+            }
+        });
+
+        document.getElementById('speakBtn').addEventListener('click', function() {
+            const storyText = document.getElementById('story').textContent;
+            const utterance = new SpeechSynthesisUtterance(storyText);
+            window.speechSynthesis.speak(utterance);
+        });
+
+        document.getElementById('saveBtn').addEventListener('click', function() {
+            const storyText = document.getElementById('story').textContent;
+            const blob = new Blob([storyText], {
+                type: 'text/plain'
+            });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'haunted_story.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+
+        document.getElementById('darkModeBtn').addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+        });
+
+        document.getElementById('generateImageBtn').addEventListener('click', async function() {
+            const storyText = document.getElementById('story').textContent;
+            const response = await fetch('/generate_image', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    story_text: storyText
+                })
+            });
+            const data = await response.json();
+            if (data.ok) {
+                const img = document.createElement('img');
+                img.src = data.image_url;
+                img.style.maxWidth = '100%';
+                img.style.height = 'auto';
+                img.style.marginTop = '20px';
+                img.style.border = '2px solid #ff0000';
+                img.style.borderRadius = '10px';
+                document.getElementById('story').appendChild(img);
+            } else {
+                alert('Error generating image: ' + data.error);
+            }
+        });
+
+        document.getElementById('glitchBtn').addEventListener('click', triggerGlitch);
+
+        // Jumpscare variables
+        let jumpscareEnabled = false;
+        let jumpscarePeaks = [];
+        let jumpscareTimeouts = [];
+        let audioContext = null;
+        let storyParagraphs = [];
+        let storyPeaks = [];
+
+        // Initialize Web Audio API
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new(window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        // Generate simple horror sounds using Web Audio API
+        function generateSound(type) {
+            if (!audioContext) return;
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            switch (type) {
+                case 'rumble':
+                    oscillator.frequency.setValueAtTime(50, audioContext.currentTime);
+                    oscillator.frequency.exponentialRampToValueAtTime(30, audioContext.currentTime + 0.5);
+                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                    oscillator.start();
+                    oscillator.stop(audioContext.currentTime + 0.5);
+                    break;
+                case 'scream':
+                    oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                    oscillator.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.3);
+                    gainNode.gain.setValueAtTime(0.4, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                    oscillator.start();
+                    oscillator.stop(audioContext.currentTime + 0.3);
+                    break;
+                case 'whisper':
+                    oscillator.frequency.setValueAtTime(1000, audioContext.currentTime);
+                    oscillator.frequency.setValueAtTime(1200, audioContext.currentTime + 0.1);
+                    oscillator.frequency.setValueAtTime(800, audioContext.currentTime + 0.2);
+                    gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                    oscillator.start();
+                    oscillator.stop(audioContext.currentTime + 0.3);
+                    break;
+                case 'thunder':
+                    oscillator.frequency.setValueAtTime(100, audioContext.currentTime);
+                    oscillator.frequency.exponentialRampToValueAtTime(50, audioContext.currentTime + 0.2);
+                    gainNode.gain.setValueAtTime(0.5, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                    oscillator.start();
+                    oscillator.stop(audioContext.currentTime + 0.2);
+                    break;
+                case 'creak':
+                    oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
+                    oscillator.frequency.setValueAtTime(150, audioContext.currentTime + 0.1);
+                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                    oscillator.start();
+                    oscillator.stop(audioContext.currentTime + 0.2);
+                    break;
+            }
+        }
+
+        // Trigger jumpscare effect
+        function triggerJumpscare() {
+            const effects = ['flash', 'flicker', 'distort'];
+            const sounds = ['rumble', 'scream', 'whisper', 'thunder', 'creak'];
+            const randomEffect = effects[Math.floor(Math.random() * effects.length)];
+            const randomSound = sounds[Math.floor(Math.random() * sounds.length)];
+
+            // Play sound
+            generateSound(randomSound);
+
+            // Visual effects
+            const body = document.body;
+            const storyDiv = document.getElementById('story');
+
+            switch (randomEffect) {
+                case 'flash':
+                    const flashOverlay = document.getElementById('flashOverlay');
+                    flashOverlay.style.opacity = '1';
+                    setTimeout(() => flashOverlay.style.opacity = '0', 200);
+                    break;
+                case 'flicker':
+                    body.style.opacity = '0.3';
+                    setTimeout(() => body.style.opacity = '1', 100);
+                    setTimeout(() => body.style.opacity = '0.3', 200);
+                    setTimeout(() => body.style.opacity = '1', 300);
+                    break;
+                case 'distort':
+                    storyDiv.style.transform = 'scale(1.1) rotate(2deg)';
+                    setTimeout(() => storyDiv.style.transform = '', 300);
+                    break;
+            }
+        }
+
+        // Toggle jumpscare mode
+        function toggleJumpscare() {
+            jumpscareEnabled = !jumpscareEnabled;
+            const btn = document.getElementById('jumpscareBtn');
+            btn.textContent = jumpscareEnabled ? 'Disable Jumpscare Generator' : 'AI-Driven Jumpscare Generator';
+            if (!jumpscareEnabled) {
+                // Clear any pending jumpscares
+                jumpscareTimeouts.forEach(timeout => clearTimeout(timeout));
+                jumpscareTimeouts = [];
+            }
+        }
+
+        // Schedule jumpscares based on peaks
+        function scheduleJumpscares(peaks, storyText) {
+            if (!jumpscareEnabled) return;
+            // Clear previous timeouts
+            jumpscareTimeouts.forEach(timeout => clearTimeout(timeout));
+            jumpscareTimeouts = [];
+            // Schedule jumpscares at peaks or random intervals
+            const numJumpscares = Math.min(peaks.length || 3, 5); // Default to 3 if no peaks
+            for (let i = 0; i < numJumpscares; i++) {
+                let delay;
+                if (peaks.length > 0) {
+                    // Schedule at peak paragraphs (simulate reading time)
+                    const peakIndex = peaks[i % peaks.length];
+                    delay = (peakIndex + 1) * 3000 + Math.random() * 2000; // Estimate 3s per paragraph + random
+                } else {
+                    delay = Math.random() * 15000 + 5000; // Random delay between 5-20 seconds
+                }
+                const timeout = setTimeout(triggerJumpscare, delay);
+                jumpscareTimeouts.push(timeout);
+            }
+        }
+
+        // Analyze story for peaks and schedule jumpscares
+        async function analyzeAndScheduleJumpscares(storyText) {
+            if (!jumpscareEnabled) return;
+            try {
+                const response = await fetch('/analyze_peaks', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        story_text: storyText
+                    })
+                });
+                const data = await response.json();
+                if (data.ok) {
+                    jumpscarePeaks = data.peaks;
+                    scheduleJumpscares(jumpscarePeaks, storyText);
+                }
+            } catch (error) {
+                console.error('Jumpscare analysis failed:', error);
+            }
+        }
+
+        // Event listeners
+        document.getElementById('jumpscareBtn').addEventListener('click', toggleJumpscare);
+        // Initialize audio on first user interaction
+        document.addEventListener('click', initAudio, {
+            once: true
+        });
+
+        function exitHauntedRealm() {
+            window.location.href = '/exit';
+        }
+    </script>
+</body>
+
+</html>
+
+</html>
+
+</html>
+
+</html>
+
+</html>
+
+</html>

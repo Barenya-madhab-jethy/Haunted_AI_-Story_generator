@@ -1,0 +1,359 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exit the Haunted Realm</title>
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #000000, #1a0000, #0d001a, #000000);
+            background-attachment: fixed;
+            color: #ff0000;
+            font-family: 'Creepster', cursive;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            text-align: center;
+            overflow-x: hidden;
+            position: relative;
+            animation: heartbeat 2s infinite;
+            filter: sepia(0.1) contrast(1.2) brightness(0.8);
+            transition: background 1s ease, filter 1s ease;
+        }
+        
+        body.dark-mode {
+            background: linear-gradient(135deg, #000000, #000033, #000000, #000000);
+            filter: sepia(0.2) contrast(1.5) brightness(0.5) hue-rotate(180deg);
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(255, 0, 0, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(128, 0, 128, 0.1) 0%, transparent 50%), radial-gradient(circle at 40% 80%, rgba(0, 0, 0, 0.8) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+            animation: shadow-shift 10s infinite linear;
+        }
+        
+        h1 {
+            font-size: 3em;
+            text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000;
+            animation: flicker 2s infinite alternate, blood-drip 4s infinite;
+            margin-top: 50px;
+        }
+        
+        .thankyou-message {
+            font-size: 2em;
+            color: #ffffff;
+            text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000;
+            animation: glow-text 3s infinite alternate;
+            margin-bottom: 50px;
+        }
+        
+        .feedback-btn {
+            background: #8b0000;
+            color: #ff0000;
+            border: 2px solid #ff0000;
+            padding: 12px 20px;
+            margin: 10px 5px;
+            cursor: pointer;
+            font-family: 'Creepster', cursive;
+            font-size: 1.2em;
+            border-radius: 5px;
+            transition: all 0.3s;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+            animation: glow 2s infinite alternate;
+        }
+        
+        .feedback-btn:hover {
+            background: #ff0000;
+            color: #000000;
+            box-shadow: 0 0 20px #ff0000, inset 0 0 10px rgba(139, 0, 0, 0.5);
+            transform: scale(1.1);
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        .ghost {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .ghost:nth-child(1) {
+            top: 10%;
+            left: 10%;
+        }
+        
+        .ghost:nth-child(2) {
+            top: 20%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+        
+        .ghost:nth-child(3) {
+            bottom: 20%;
+            left: 15%;
+            animation-delay: 4s;
+        }
+        
+        .ghost:nth-child(4) {
+            top: 30%;
+            right: 20%;
+            animation-delay: 1s;
+        }
+        
+        .ghost:nth-child(5) {
+            bottom: 30%;
+            right: 15%;
+            animation-delay: 3s;
+        }
+        
+        .fog {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 40%, rgba(255, 255, 255, 0.05) 0%, transparent 50%), radial-gradient(circle at 70% 60%, rgba(255, 255, 255, 0.03) 0%, transparent 50%);
+            animation: fog-move 20s infinite linear;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.05;
+            transition: opacity 1s ease;
+        }
+        
+        body.dark-mode .fog {
+            opacity: 0.3;
+        }
+        
+        @keyframes fog-move {
+            0% {
+                transform: translateX(-100%) translateY(-50%);
+            }
+            100% {
+                transform: translateX(100%) translateY(50%);
+            }
+        }
+        
+        .blood-drip {
+            position: absolute;
+            top: 0;
+            width: 2px;
+            height: 100px;
+            background: linear-gradient(to bottom, #ff0000 0%, rgba(255, 0, 0, 0) 100%);
+            animation: drip 3s infinite linear;
+            opacity: 0.6;
+        }
+        
+        .blood-drip:nth-child(6) {
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .blood-drip:nth-child(7) {
+            right: 10%;
+            animation-delay: 1s;
+        }
+        
+        .blood-drip:nth-child(8) {
+            left: 25%;
+            animation-delay: 2s;
+        }
+        
+        @keyframes drip {
+            0% {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
+        
+        .skull {
+            position: absolute;
+            top: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50% 50% 40% 40%;
+            animation: skull-float 7s infinite ease-in-out;
+            opacity: 0.3;
+        }
+        
+        .skull::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 15px;
+            width: 50px;
+            height: 30px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 50%;
+            clip-path: polygon(0% 0%, 100% 0%, 85% 100%, 15% 100%);
+        }
+        
+        @keyframes skull-float {
+            0%,
+            100% {
+                transform: translateX(-50%) translateY(0px) rotate(0deg);
+            }
+            25% {
+                transform: translateX(-50%) translateY(-10px) rotate(2deg);
+            }
+            50% {
+                transform: translateX(-50%) translateY(0px) rotate(0deg);
+            }
+            75% {
+                transform: translateX(-50%) translateY(10px) rotate(-2deg);
+            }
+        }
+        
+        @keyframes heartbeat {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.02);
+            }
+        }
+        
+        @keyframes flicker {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.8;
+            }
+        }
+        
+        @keyframes blood-drip {
+            0%,
+            100% {
+                text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000;
+            }
+            25% {
+                text-shadow: 2px 2px 5px #8b0000, 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000;
+            }
+            50% {
+                text-shadow: -2px 2px 5px #8b0000, 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000;
+            }
+            75% {
+                text-shadow: 0 -2px 5px #8b0000, 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000;
+            }
+        }
+        
+        @keyframes glow {
+            0%,
+            100% {
+                box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
+            }
+        }
+        
+        @keyframes glow-text {
+            0%,
+            100% {
+                text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000;
+            }
+            50% {
+                text-shadow: 0 0 15px #ff4500, 0 0 25px #ff4500, 0 0 35px #ff4500;
+            }
+        }
+        
+        @keyframes shadow-shift {
+            0% {
+                transform: translateX(0) translateY(0);
+            }
+            25% {
+                transform: translateX(10px) translateY(-5px);
+            }
+            50% {
+                transform: translateX(0) translateY(0);
+            }
+            75% {
+                transform: translateX(-10px) translateY(5px);
+            }
+            100% {
+                transform: translateX(0) translateY(0);
+            }
+        }
+        
+        @keyframes shake {
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+            10%,
+            30%,
+            50%,
+            70%,
+            90% {
+                transform: translateX(-5px);
+            }
+            20%,
+            40%,
+            60%,
+            80% {
+                transform: translateX(5px);
+            }
+        }
+        
+        @keyframes float {
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="background-image"></div>
+    <h1>Thank You for Entering the Haunted Realm</h1>
+    <p class="thankyou-message">Your soul has been touched by the darkness... but you may leave now. The spirits whisper your name in the void. The shadows cling to your footsteps, and the echoes of forgotten screams follow you into the light. Beware, for the haunted realm never
+        truly lets go. Your nightmares will be richer, your fears deeper, and the boundary between reality and terror forever blurred. Return if you dare... or flee while the veil is thin.</p>
+    <button class="feedback-btn" onclick="provideFeedback()">Provide Feedback</button>
+    <div class="ghost"></div>
+    <div class="ghost"></div>
+    <div class="ghost"></div>
+    <div class="ghost"></div>
+    <div class="ghost"></div>
+    <div class="fog"></div>
+    <div class="blood-drip"></div>
+    <div class="blood-drip"></div>
+    <div class="blood-drip"></div>
+    <div class="skull"></div>
+    <script>
+        function provideFeedback() {
+            window.location.href = '/feedback';
+        }
+    </script>
+</body>
+
+</html>
